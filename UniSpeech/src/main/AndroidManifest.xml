@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.unispeech">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:name="com.github.unispeech.App"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name">
+        <activity
+            android:name=".recognition.YourLanguageSelectActivity"
+            android:label="@string/title_activity_language_select">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action
+                    android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+
+            <meta-data android:name="com.google.android.glass.VoiceTrigger"
+                       android:resource="@xml/voice_trigger" />
+        </activity>
+        <activity
+            android:name="com.github.unispeech.recognition.TheirLanguageSelectActivity"
+            android:label="@string/app_name"></activity>
+        <activity
+            android:name="com.github.unispeech.recognition.RecognitionActivity"
+            android:label="@string/app_name"></activity>
+    </application>
+
+</manifest>

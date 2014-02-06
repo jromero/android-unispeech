@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">UniSpeech</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_language_select">UniSpeech</string>
+    <string name="recog_tap_and_hold">Tap and hold to listen</string>
+    <string name="recog_tap_to_start">Tap to start recording</string>
+    <string name="recog_listenting">Listening...</string>
+    <string name="recog_translating">Translating...</string>
+    <string name="recog_processing">Translating...</string>
+    <string name="recog_initializing">Initializing...</string>
+
+</resources>

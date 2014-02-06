@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.github.unispeech.recognition.RecognitionActivity"
+                android:keepScreenOn="true"
+                android:padding="10dp"
+                tools:ignore="MergeRootFrame">
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stackFromBottom="true"
+        android:listSelector="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:layout_above="@+id/lbl_status"
+        android:id="@+id/list">
+    </ListView>
+
+    <TextView
+        android:id="@+id/lbl_status"
+        style="@style/Text.Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recog_tap_to_start"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/indeterm_slider"
+        android:alpha="0.5"/>
+
+
+    <com.google.glass.widget.SliderView
+        android:id="@+id/indeterm_slider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

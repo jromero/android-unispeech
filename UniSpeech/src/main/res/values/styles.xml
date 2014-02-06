@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Text">
+        <item name="android:textSize">26dp</item>
+    </style>
+
+
+    <style name="Text.Status">
+        <item name="android:textSize">18dp</item>
+    </style>
+
+
+    <style name="Text.ListItem">
+        <item name="android:textColor">@color/list_item_color_selector</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>
