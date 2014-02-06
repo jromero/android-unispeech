@@ -17,3 +17,8 @@ Screenshots
 <img src="https://dl.dropboxusercontent.com/u/6664528/UniSpeech/Screen%20Shot%202014-02-06%20at%204.27.46%20PM.png" width="240" />
 <br />
 <img src="https://dl.dropboxusercontent.com/u/6664528/UniSpeech/Screen%20Shot%202014-02-06%20at%204.27.55%20PM.png" width="240" />
+
+
+Download
+---------------
+<a href="https://db.tt/IV3W2uXw">Latest Debug Build</a>
