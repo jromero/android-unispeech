@@ -18,6 +18,23 @@ Screenshots
 <br />
 <img src="https://dl.dropboxusercontent.com/u/6664528/UniSpeech/Screen%20Shot%202014-02-06%20at%204.27.55%20PM.png" width="240" />
 
+Features
+---------------
+ * Translate between 5 languages
+ 
+Use cases
+---------------
+ * Learn/practice a new language
+ * Assistance for the impaired
+ * Cross linguistic communications
+
+Planned Improvements
+---------------
+ * More languages
+ * Android (Play Store) build
+ * Share "conversation"
+ * Option to invert listening (tap and hold to pause listening)
+ * Option to hear translation
 
 Download
 ---------------
