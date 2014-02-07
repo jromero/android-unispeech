@@ -1,0 +1,6 @@
+[submodule "dependencies/glass-progress-bar"]
+	path = dependencies/glass-progress-bar
+	url = git@github.com:pif/glass-progress-bar.git
+[submodule "dependencies/google-api-translate-android"]
+	path = dependencies/google-api-translate-android
+	url = git@github.com:Rookery/google-api-translate-android.git
