@@ -306,9 +306,11 @@ public class RecognitionActivity extends Activity {
             ViewHolder holder = (ViewHolder) convertView.getTag();
             if (data.isTranslated()) {
                 holder.text.setText(data.getTranslatedText());
+                holder.text.setTextColor(getContext().getResources().getColor(R.color.white));
                 holder.text.setTypeface(null, Typeface.NORMAL);
             } else {
                 holder.text.setText(data.getOriginalText());
+                holder.text.setTextColor(getContext().getResources().getColor(R.color.darkest_grey));
                 holder.text.setTypeface(null, Typeface.ITALIC);
             }
 
