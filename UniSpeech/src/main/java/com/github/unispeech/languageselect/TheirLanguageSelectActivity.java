@@ -1,8 +1,10 @@
-package com.github.unispeech.recognition;
+package com.github.unispeech.languageselect;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.github.unispeech.recognition.RecognitionActivity;
 
 /**
  * Created by javier.romero on 2/6/14.

@@ -1,4 +1,4 @@
-package com.github.unispeech.recognition;
+package com.github.unispeech.languageselect;
 
 import android.content.Intent;
 

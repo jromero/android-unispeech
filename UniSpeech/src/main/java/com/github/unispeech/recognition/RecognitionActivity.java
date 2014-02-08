@@ -3,32 +3,24 @@ package com.github.unispeech.recognition;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.glass.touchpad.Gesture;
-import com.google.android.glass.touchpad.GestureDetector;
-
 import com.github.unispeech.App;
 import com.github.unispeech.R;
+import com.github.unispeech.languageselect.SupportedSttLanguage;
+import com.google.android.glass.touchpad.Gesture;
+import com.google.android.glass.touchpad.GestureDetector;
 import com.google.glass.widget.SliderView;
 import com.nuance.nmdp.speechkit.Recognition;
 import com.nuance.nmdp.speechkit.Recognizer;
 import com.nuance.nmdp.speechkit.SpeechError;
 import com.rookery.web_api_translate.GoogleTranslator;
-import com.rookery.web_api_translate.type.Language;
-import com.rookery.web_api_translate.type.TranslateError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +33,14 @@ public class RecognitionActivity extends Activity {
     private final List<SpeechData> mSpeechDatas = new ArrayList<SpeechData>();
     private Handler mHandler = new Handler();
     private Recognizer mRecognizer;
-    private TextView mText;
     private SupportedSttLanguage mYourLanguage;
     private SupportedSttLanguage mTheirLanguage;
-    private boolean mRecognizerRunning = false;
     private ListView mListView;
     private SpeechAdapter mAdapter;
     private GestureDetector mGestureDetector;
     private SliderView mSliderView;
     private TextView mStatusText;
+    private boolean mRecognizerRecording = false;
 
     public static Intent newIntent(Context context, SupportedSttLanguage yourLanguage,
                                    SupportedSttLanguage theirLanguage) {
@@ -75,7 +66,11 @@ public class RecognitionActivity extends Activity {
         mSliderView = (SliderView) findViewById(R.id.indeterm_slider);
 
         if (App.runningOnGoogleGlass()) {
-            mGestureDetector = createGestureDetector(this);
+            mGestureDetector = new GestureDetector(this);
+            mGestureDetector.setAlwaysConsumeEvents(true);
+            mGestureDetector.setBaseListener(mBaseListener);
+            mGestureDetector.setScrollListener(mScrollListener);
+            mGestureDetector.setFingerListener(mFingerListener);
         }
 
         setStatus(R.string.recog_tap_and_hold);
@@ -154,8 +149,6 @@ public class RecognitionActivity extends Activity {
                 mTheirLanguage.getIsoCode(), mListener, mHandler);
 
         mRecognizer.start();
-        mRecognizerRunning = true;
-
         startIndeterminate();
         setStatus(R.string.recog_initializing);
     }
@@ -166,7 +159,6 @@ public class RecognitionActivity extends Activity {
             mRecognizer.stopRecording();
         }
 
-        mRecognizerRunning = false;
         stopIndeterminate();
         setStatus(R.string.recog_tap_and_hold);
     }
@@ -177,7 +169,6 @@ public class RecognitionActivity extends Activity {
             mRecognizer.cancel();
         }
 
-        mRecognizerRunning = false;
         stopIndeterminate();
         setStatus(R.string.recog_tap_and_hold);
     }
@@ -205,23 +196,6 @@ public class RecognitionActivity extends Activity {
         mStatusText.setText(getString(resource));
     }
 
-    private GestureDetector createGestureDetector(Context context) {
-        GestureDetector gestureDetector = new GestureDetector(context);
-
-        //Create a base listener for generic gestures
-        gestureDetector.setFingerListener(new GestureDetector.FingerListener() {
-            @Override
-            public void onFingerCountChanged(int previousCount, int newCount) {
-                if (newCount == 1 && previousCount == 0) {
-                    startRecognizer();
-                } else if (newCount == 0) {
-                    stopRecognizer();
-                }
-            }
-        });
-        return gestureDetector;
-    }
-
     /*
      * Send generic motion events to the gesture detector
      */
@@ -243,9 +217,9 @@ public class RecognitionActivity extends Activity {
         mSliderView.setVisibility(View.INVISIBLE);
     }
 
-    public void setProgress(long progress) {
+    public void setProgress(float progress) {
         mSliderView.setVisibility(View.VISIBLE);
-        mSliderView.startProgress(progress);
+        mSliderView.setManualProgress(progress);
     }
 
     public void dismissProgress() {
@@ -253,116 +227,13 @@ public class RecognitionActivity extends Activity {
         mSliderView.setVisibility(View.INVISIBLE);
     }
 
-    private static class TranslatorCallback implements GoogleTranslator.Callback {
-
-        private final RecognitionActivity mActivity;
-        private final SpeechData mSpeechData;
-
-        public TranslatorCallback(RecognitionActivity activity, SpeechData speechData) {
-            mActivity = activity;
-            mSpeechData = speechData;
-            mActivity.setStatus(R.string.recog_translating);
-        }
-
-        @Override
-        public void onSuccess(Language detected_lang, String translated_text) {
-            Log.v(TAG, "GoogleTranslator: onSuccess: from " + detected_lang + " '" + translated_text + "'");
-
-            // decode html: http://stackoverflow.com/questions/2918920/decode-html-entities-in-android
-            translated_text = Html.fromHtml(Html.fromHtml(translated_text).toString()).toString();
-
-            mSpeechData.setTranslatedText(translated_text);
-            mActivity.updateSpeechData(mSpeechData);
-            mActivity.stopIndeterminate();
-            mActivity.setStatus(R.string.recog_tap_and_hold);
-        }
-
-        @Override
-        public void onFailed(TranslateError e) {
-            Log.e(TAG, "GoogleTranslator: onFailed", e);
-            mActivity.stopIndeterminate();
-            mActivity.setStatus(e.getMessage());
-        }
-    }
-
-    public static class SpeechAdapter extends ArrayAdapter<SpeechData> {
-
-        private final LayoutInflater mLayoutInflater;
-
-        public SpeechAdapter(Context context, List<SpeechData> speechDataList) {
-            super(context, 0, speechDataList);
-            mLayoutInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            SpeechData data = getItem(position);
-
-            if (convertView == null) {
-                convertView = mLayoutInflater.inflate(R.layout.item_speech, null);
-                convertView.setTag(new ViewHolder(convertView));
-            }
-
-            ViewHolder holder = (ViewHolder) convertView.getTag();
-            if (data.isTranslated()) {
-                holder.text.setText(data.getTranslatedText());
-                holder.text.setTextColor(getContext().getResources().getColor(R.color.white));
-                holder.text.setTypeface(null, Typeface.NORMAL);
-            } else {
-                holder.text.setText(data.getOriginalText());
-                holder.text.setTextColor(getContext().getResources().getColor(R.color.darkest_grey));
-                holder.text.setTypeface(null, Typeface.ITALIC);
-            }
-
-            return convertView;
-        }
-    }
-
-    private static class ViewHolder {
-        public final TextView text;
-
-        public ViewHolder(View view) {
-           text = (TextView) view.findViewById(R.id.lbl_speech);
-        }
-    }
-
-    public static class SpeechData {
-        private String mOriginalText;
-        private String mTranslatedText;
-
-        public SpeechData(String originalText) {
-            mOriginalText = originalText;
-        }
-
-        public SpeechData(String originalText, String translatedText) {
-            mOriginalText = originalText;
-            mTranslatedText = translatedText;
-        }
-
-        public String getOriginalText() {
-            return mOriginalText;
-        }
-
-        public String getTranslatedText() {
-            return mTranslatedText;
-        }
-
-        public void setTranslatedText(String translatedText) {
-            mTranslatedText = translatedText;
-        }
-
-        public boolean isTranslated() {
-            return mTranslatedText != null;
-        }
-    }
-
-
     private Recognizer.Listener mListener = new Recognizer.Listener() {
 
         @Override
         public void onRecordingBegin(Recognizer recognizer) {
             Log.v(TAG, "onRecordingBegin");
-            setProgress(50L);
+            mRecognizerRecording = true;
+            setProgress(1f);
             RecognitionActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -374,6 +245,7 @@ public class RecognitionActivity extends Activity {
         @Override
         public void onRecordingDone(Recognizer recognizer) {
             Log.v(TAG, "onRecordingDone");
+            mRecognizerRecording = false;
             dismissProgress();
             RecognitionActivity.this.runOnUiThread(new Runnable() {
                 @Override
@@ -393,8 +265,6 @@ public class RecognitionActivity extends Activity {
                 return;
             }
 
-            mRecognizerRunning = false;
-
             final String text = recognition.getResult(0).getText();
             RecognitionActivity.this.runOnUiThread(new Runnable() {
                 @Override
@@ -412,32 +282,71 @@ public class RecognitionActivity extends Activity {
         public void onError(Recognizer recognizer, final SpeechError speechError) {
             Log.v(TAG, "onError");
             Log.v(TAG, "Error: " + speechError.getErrorDetail());
-            RecognitionActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    stopIndeterminate();
-                    dismissProgress();
-                    mRecognizerRunning = false;
-                    setStatus(speechError.getErrorDetail());
-                }
-            });
+            if (speechError.getErrorCode() != SpeechError.Codes.CanceledError) {
+                RecognitionActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopIndeterminate();
+                        dismissProgress();
+                        setStatus(speechError.getErrorDetail());
+                    }
+                });
+            }
         }
     };
-
 
     private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    Log.v(TAG, "Event caught: ACTION_DOWN");
                     startRecognizer();
-                    break;
+                    return true;
                 case MotionEvent.ACTION_UP:
+                    Log.v(TAG, "Event caught: ACTION_UP");
                     stopRecognizer();
-                    break;
+                    return true;
             }
 
+            return false;
+        }
+    };
+
+    private GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener() {
+        @Override
+        public boolean onGesture(Gesture gesture) {
+            Log.v(TAG, "onGesture: " + gesture);
+            switch (gesture) {
+            }
+            return false;
+        }
+    };
+
+    private GestureDetector.ScrollListener mScrollListener = new GestureDetector.ScrollListener() {
+        @Override
+        public boolean onScroll(float v, float v2, float v3) {
+            Log.v(TAG, "onScroll: " + v + "," + v2 + ","+ v3);
             return true;
+        }
+    };
+
+    /**
+     * Detect changes in fingers to start, pause, stop the recording process
+     */
+    private GestureDetector.FingerListener mFingerListener = new GestureDetector.FingerListener() {
+        @Override
+        public void onFingerCountChanged(int previousCount, int newCount) {
+            Log.v(TAG, "onFingerCountChanged: " + previousCount + "," + newCount);
+            if (newCount == 1 && previousCount == 0) {
+                startRecognizer();
+            } else if (newCount == 0) {
+                if (mRecognizerRecording) {
+                    stopRecognizer();
+                } else {
+                    cancelRecognizer();
+                }
+            }
         }
     };
 }

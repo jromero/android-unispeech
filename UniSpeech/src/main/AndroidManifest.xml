@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         android:label="@string/app_name">
         <activity
-            android:name=".recognition.YourLanguageSelectActivity"
+            android:name=".languageselect.YourLanguageSelectActivity"
             android:label="@string/title_activity_language_select">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
                        android:resource="@xml/voice_trigger" />
         </activity>
         <activity
-            android:name="com.github.unispeech.recognition.TheirLanguageSelectActivity"
+            android:name=".languageselect.TheirLanguageSelectActivity"
             android:label="@string/app_name"></activity>
         <activity
             android:name="com.github.unispeech.recognition.RecognitionActivity"
