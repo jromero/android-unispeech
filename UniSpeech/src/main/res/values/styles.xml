@@ -19,4 +19,11 @@
         <item name="android:textColor">@color/list_item_color_selector</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+    <style name="Text.ListItem.Language"></style>
+
+    <style name="Text.ListItem.Language.Specifier">
+        <item name="android:textColor">@color/darkest_grey</item>
+    </style>
+
 </resources>

@@ -38,7 +38,6 @@ public class RecognitionActivity extends Activity {
     private static final String TAG = RecognitionActivity.class.getSimpleName();
     private static final String EXTRA_YOUR_LANG_ISO_CODE = "EXTRA_YOUR_LANG_ISO_CODE";
     private static final String EXTRA_THEIR_LANG_ISO_CODE = "EXTRA_THEIR_LANG_ISO_CODE";
-    private static final String GOOGLE_TRANSLATE_API_KEY = "YOUR_KEY_HERE";
     private final List<SpeechData> mSpeechDatas = new ArrayList<SpeechData>();
     private Handler mHandler = new Handler();
     private Recognizer mRecognizer;
@@ -190,7 +189,7 @@ public class RecognitionActivity extends Activity {
             startIndeterminate();
             GoogleTranslator.getInstance().execute(speechData.getOriginalText(),
                     mYourLanguage.getTranslationLanguage(),
-                    GOOGLE_TRANSLATE_API_KEY, new TranslatorCallback(this, speechData));
+                    App.GOOGLE_TRANSLATE_API_KEY, new TranslatorCallback(this, speechData));
         } else {
             speechData.setTranslatedText(speechData.getOriginalText());
             updateSpeechData(speechData);

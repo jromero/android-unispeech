@@ -1,1 +1,3 @@
-include ':UniSpeech', ':google-api-translate-android', ':glass-progress-bar'
+include ':UniSpeech'
+include ':dependencies:glass-progress-bar'
+include ':dependencies:google-api-translate-android:google-api-translate-android'

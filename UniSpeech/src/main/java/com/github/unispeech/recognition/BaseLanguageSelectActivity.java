@@ -4,20 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.unispeech.R;
 
-import me.jromero.accessability.widget.GravityListView;
-
 public abstract class BaseLanguageSelectActivity extends Activity {
 
-    private GravityListView mListView;
+    private ListView mListView;
 
     protected abstract String getPrompt();
 
@@ -30,29 +30,9 @@ public abstract class BaseLanguageSelectActivity extends Activity {
 
         ((TextView) findViewById(R.id.lbl_prompt)).setText(getPrompt());
 
-        mListView = (GravityListView) findViewById(R.id.list);
+        mListView = (ListView) findViewById(R.id.list);
         mListView.setAdapter(new LanguagesAdapter(this, SupportedSttLanguage.values()));
         mListView.setOnItemClickListener(mOnItemClickListener);
-
-        mListView.onCreate();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mListView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        mListView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mListView.onDestroy();
-        super.onDestroy();
     }
 
     private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
@@ -79,8 +59,16 @@ public abstract class BaseLanguageSelectActivity extends Activity {
                 convertView.setTag(new ViewHolder(convertView));
             }
 
+            SupportedSttLanguage language = getItem(position);
+
             ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-            viewHolder.language.setText(getItem(position).getLabel());
+            viewHolder.language.setText(language.getLabel());
+            if (!TextUtils.isEmpty(language.getSpecifier())) {
+                viewHolder.specifier.setText("(" +language.getSpecifier() + ")");
+                viewHolder.specifier.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.specifier.setVisibility(View.GONE);
+            }
 
             return convertView;
         }
@@ -88,9 +76,11 @@ public abstract class BaseLanguageSelectActivity extends Activity {
 
     public static final class ViewHolder {
         public final TextView language;
+        public final TextView specifier;
 
         public ViewHolder(View view) {
             language = (TextView) view.findViewById(R.id.lbl_language);
+            specifier = (TextView) view.findViewById(R.id.lbl_language_specifier);
         }
     }
 }

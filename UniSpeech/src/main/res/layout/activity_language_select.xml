@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="Prompt"/>
 
-    <me.jromero.accessability.widget.GravityListView
+    <ListView
         android:id="@+id/list"
         android:layout_below="@+id/lbl_prompt"
         android:layout_width="match_parent"
@@ -23,6 +23,6 @@
         android:divider="@android:color/transparent"
         android:layout_marginLeft="40dp"
         android:layout_height="match_parent">
-    </me.jromero.accessability.widget.GravityListView>
+    </ListView>
 
 </RelativeLayout>

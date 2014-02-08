@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             runProguard false
@@ -20,6 +21,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':google-api-translate-android')
-    compile project(':glass-progress-bar')
+    compile project(':dependencies:google-api-translate-android:google-api-translate-android')
+    compile project(':dependencies:glass-progress-bar')
 }

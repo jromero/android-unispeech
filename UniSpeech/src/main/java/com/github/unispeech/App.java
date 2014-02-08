@@ -11,10 +11,12 @@ import com.nuance.nmdp.speechkit.SpeechKit;
  */
 public class App extends Application {
 
-    private static final byte[] SPEECH_KIT_APPLICATION_KEY = {
+    private static final byte[] NUANCE_APPLICATION_KEY = {
     };
-    private static final String API_ID = "YOUR_ID_HERE";
-    private static final String HOST = "YOUR_HOST_HERE";
+
+    private static final String NUANCE_API_ID = "YOUR_APP_ID_HERE";
+    private static final String NUANCE_HOST = "YOUR_HOST_HERE";
+    public static final String GOOGLE_TRANSLATE_API_KEY = "YOUR_GOOGLE_TRANSLATE_API_KEY";
 
     private SpeechKit mSpeechKit;
 
@@ -24,9 +26,9 @@ public class App extends Application {
 
         mSpeechKit = SpeechKit.initialize(
                 this.getApplicationContext(),
-                API_ID,
-                HOST,
-                443, false, SPEECH_KIT_APPLICATION_KEY);
+                NUANCE_API_ID,
+                NUANCE_HOST,
+                443, false, NUANCE_APPLICATION_KEY);
 
         mSpeechKit.connect();
     }
