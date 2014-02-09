@@ -38,4 +38,4 @@ Planned Improvements
 
 Download
 ---------------
-<a href="https://db.tt/IV3W2uXw">Latest Debug Build</a> [last update: 04/08/2013 6:15PM CST]
+<a href="https://db.tt/IV3W2uXw">Latest Debug Build</a> [last update: 02/08/2013 6:15PM CST]
