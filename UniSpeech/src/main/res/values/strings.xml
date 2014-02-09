@@ -9,7 +9,7 @@
     <string name="recog_tap_to_start">Tap to start recording</string>
     <string name="recog_listenting">Listening...</string>
     <string name="recog_translating">Translating...</string>
-    <string name="recog_processing">Translating...</string>
+    <string name="recog_processing">Processing...</string>
     <string name="recog_initializing">Initializing...</string>
 
 </resources>
