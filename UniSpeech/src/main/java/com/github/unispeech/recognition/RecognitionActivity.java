@@ -20,6 +20,7 @@ import com.google.glass.widget.SliderView;
 import com.nuance.nmdp.speechkit.Recognition;
 import com.nuance.nmdp.speechkit.Recognizer;
 import com.nuance.nmdp.speechkit.SpeechError;
+import com.nuance.nmdp.speechkit.m;
 import com.rookery.web_api_translate.GoogleTranslator;
 
 import java.util.ArrayList;
@@ -227,19 +228,47 @@ public class RecognitionActivity extends Activity {
         mSliderView.setVisibility(View.INVISIBLE);
     }
 
+    public Runnable mAudioLevelRunnable = new Runnable() {
+
+        private static final long AUDIO_LEVEL_FREQUENCY_MS = 50;
+
+        @Override
+        public void run() {
+            /*
+             * level is returns in values 0.0 and 90.0 dB where 90 is the highest power level
+             * and 0 is the lowest level
+             */
+            float level = mRecognizer.getAudioLevel();
+            Log.v(TAG, "audioLevel: " + level);
+
+            // normalize to 0% - 100%
+            level = level / 90;
+
+            Log.v(TAG, "progress: " + level);
+            setProgress(level);
+
+            if (mRecognizerRecording) {
+                mHandler.postDelayed(this, AUDIO_LEVEL_FREQUENCY_MS);
+            }
+        }
+    };
+
     private Recognizer.Listener mListener = new Recognizer.Listener() {
 
         @Override
         public void onRecordingBegin(Recognizer recognizer) {
             Log.v(TAG, "onRecordingBegin");
             mRecognizerRecording = true;
-            setProgress(1f);
+            stopIndeterminate();
             RecognitionActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     setStatus(R.string.recog_listenting);
                 }
             });
+
+            // delayed because if we stopIndeterminate then that animation stutters
+            mHandler.postDelayed(mAudioLevelRunnable, 400);
         }
 
         @Override
@@ -247,12 +276,15 @@ public class RecognitionActivity extends Activity {
             Log.v(TAG, "onRecordingDone");
             mRecognizerRecording = false;
             dismissProgress();
+            stopIndeterminate();
             RecognitionActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     setStatus(R.string.recog_processing);
                 }
             });
+
+            mHandler.removeCallbacks(mAudioLevelRunnable);
         }
 
         @Override
