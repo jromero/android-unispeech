@@ -20,7 +20,7 @@ Screenshots
 
 Features
 ---------------
- * Translate between 5 languages
+ * Translate between 30 languages
  
 Use cases
 ---------------
@@ -30,7 +30,7 @@ Use cases
 
 Planned Improvements
 ---------------
- * More languages
+ * ~~More languages~~
  * Android (Play Store) build
  * Share "conversation"
  * Option to invert listening (tap and hold to pause listening)
@@ -38,4 +38,4 @@ Planned Improvements
 
 Download
 ---------------
-<a href="https://db.tt/IV3W2uXw">Latest Debug Build</a>
+<a href="https://db.tt/IV3W2uXw">Latest Debug Build</a> [last update: 04/08/2013 6:15PM CST]
